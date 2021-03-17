@@ -86,7 +86,6 @@ exports.createListing = errorHOF(async (req, res, next) => {
 });
 
 exports.getView = errorHOF(async (req, res, next) => {
-  console.log(req.params.id);
   const view = await ListingsModel.findOne({ slug: req.params.id });
   res.status(200).json({
     status: "success",

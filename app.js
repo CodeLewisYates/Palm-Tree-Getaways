@@ -4,6 +4,7 @@ const AuthRoutes = require("./Routes/AuthRoutes");
 const UserRoutes = require("./Routes/UserRoutes");
 const BookingRoutes = require("./Routes/BookingRoutes");
 const ErrorHandler = require("./ErrorHandler/ErrorHandler");
+const BookingController = require("./Controllers/BookingController");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -15,15 +16,21 @@ app.options("*", cors());
 
 app.use(express.static(path.join(__dirname, "build")));
 
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  BookingController.webhookCheckout
+);
+
 // Parse req.body
 app.use(express.json());
 
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  console.log("test");
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("test");
+//   next();
+// });
 
 app.use("/api/getaways", ListingsRoutes);
 

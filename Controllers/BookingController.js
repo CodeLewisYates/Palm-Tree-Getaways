@@ -37,7 +37,6 @@ exports.createBooking = errorHOF(async (req, res, next) => {
 exports.getCheckoutSession = errorHOF(async (req, res, next) => {
   const listing = await ListingModel.findOne({ slug: req.body.slug });
   const userId = req.userInfo._id;
-  console.log(userId);
   // create checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
@@ -73,3 +72,37 @@ exports.getCheckoutSession = errorHOF(async (req, res, next) => {
     sessionId: session.id,
   });
 });
+
+const createBookingFromCheckout = async (session) => {
+  const datesBooked = [session.metadata.fromDate, session.metadata.toDate];
+  const booking = await BookingModel.create({
+    userId: session.metadata.userId,
+    listingId: session.client_reference_id,
+    datesBooked: datesBooked,
+    totalPrice: session.amount_total / 100,
+    days: session.metadata.days,
+  });
+};
+
+exports.webhookCheckout = (req, res, next) => {
+  const signature = req.headers["stripe-signature"];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.WEBHOOK_SECRET
+    );
+  } catch (error) {
+    return res.status(400).send(`Webhook error: ${error.message}`);
+  }
+
+  if (event.type === "checkout.session.completed") {
+    createBookingFromCheckout(event.data.object);
+  }
+  res.status(200).json({
+    received: true,
+  });
+};

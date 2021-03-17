@@ -36,7 +36,6 @@ exports.signup = errorHOF(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
-  console.log("HEY");
   createToken(newUser, req, res);
 });
 
@@ -80,7 +79,6 @@ exports.protect = errorHOF(async (req, res, next) => {
   }
 
   req.userInfo = freshUser;
-  console.log("test");
   // access
   next();
 });
