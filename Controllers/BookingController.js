@@ -47,7 +47,9 @@ exports.getCheckoutSession = errorHOF(async (req, res, next) => {
           unit_amount: req.body.totalPrice * 100,
           product_data: {
             name: `${listing.name}`,
-            images: [`http://localhost:8000/listings/${listing.coverImage}`],
+            images: [
+              `https://palmtreegetaways.herokuapp.com/listings/${listing.coverImage}`,
+            ],
           },
         },
         quantity: 1,
