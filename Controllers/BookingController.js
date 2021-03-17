@@ -52,10 +52,8 @@ exports.getCheckoutSession = errorHOF(async (req, res, next) => {
         quantity: 1,
       },
     ],
-    success_url: `${req.protocol}://${req.get("host")}/myaccount`,
-    cancel_url: `${req.protocol}://${req.get("host")}/getaways/${
-      req.body.slug
-    }`,
+    success_url: `https://${req.get("host")}/myaccount`,
+    cancel_url: `https://${req.get("host")}/getaways/${req.body.slug}`,
     customer_email: req.userInfo.email,
     mode: "payment",
     client_reference_id: req.body.listingId,
