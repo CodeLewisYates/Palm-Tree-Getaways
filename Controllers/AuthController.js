@@ -29,7 +29,8 @@ const signToken = (id) => {
 
 exports.signup = errorHOF(async (req, res, next) => {
   const userExists = await UserModel.find({ email: req.body.email });
-  if (userExists) return next("Account with that email already exists!");
+  if (userExists.length > 0)
+    return next("Account with that email already exists!");
   const newUser = await UserModel.create({
     name: req.body.name,
     email: req.body.email,
