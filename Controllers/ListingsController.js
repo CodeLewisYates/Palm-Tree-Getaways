@@ -3,6 +3,7 @@ const sharp = require("sharp");
 const ListingsModel = require("../models/ListingModel");
 const errorHOF = require("../Utility/ErrorHOF");
 const slugify = require("slugify");
+const path = require("path");
 
 // const multerStorage = multer.diskStorage({
 //   destination: (req, file, cb) => {
@@ -33,7 +34,7 @@ exports.resizeImages = errorHOF(async (req, res, next) => {
   await sharp(req.files.coverImage[0].buffer)
     .resize(1920, 1080, { fit: "cover" })
     .toFormat("jpeg")
-    .toFile(`../build/listings/${coverImageName}`);
+    .toFile(path.join(__dirname, "build", "listings", `${coverImageName}`));
 
   // other images
   req.body.images = [];
@@ -45,7 +46,7 @@ exports.resizeImages = errorHOF(async (req, res, next) => {
       sharp(file.buffer)
         .resize(1920, 1080, { fit: "cover" })
         .toFormat("jpeg")
-        .toFile(`../build/listings/${filename}`);
+        .toFile(path.join(__dirname, "build", "listings", `${filename}`));
       req.body.images.push(filename);
     })
   );
