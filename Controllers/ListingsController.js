@@ -34,7 +34,7 @@ exports.resizeImages = errorHOF(async (req, res, next) => {
   await sharp(req.files.coverImage[0].buffer)
     .resize(1920, 1080, { fit: "cover" })
     .toFormat("jpeg")
-    .toFile(path.join(__dirname, "build", "listings", `${coverImageName}`));
+    .toFile(`../frontend/public/listings/${coverImageName}`);
 
   // other images
   req.body.images = [];
@@ -46,7 +46,7 @@ exports.resizeImages = errorHOF(async (req, res, next) => {
       sharp(file.buffer)
         .resize(1920, 1080, { fit: "cover" })
         .toFormat("jpeg")
-        .toFile(path.join(__dirname, "build", "listings", `${filename}`));
+        .toFile(`../frontend/public/listings/${filename}`);
       req.body.images.push(filename);
     })
   );
